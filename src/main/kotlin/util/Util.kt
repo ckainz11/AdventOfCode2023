@@ -25,6 +25,7 @@ fun <T, R> Matrix<T>.mapMatrixIndexed(transform: (Point, T) -> R): Matrix<R> =
 fun <T> Matrix<T>.matrixForEachIndexed(action: (Point, T) -> Unit) {
     this.forEachIndexed { y, row -> row.forEachIndexed { x, col -> action(Point(x, y), col) } }
 }
+
 fun <T> Matrix<T>.sum(sum: (T) -> Int): Int = this.sumOf { row -> row.sumOf { sum(it) } }
 
 /**
@@ -254,15 +255,25 @@ fun <T> getCol(array: List<List<T>>, col: Int): List<T> {
 infix fun IntRange.overlaps(other: IntRange): Boolean =
     first in other || last in other || other.first in this || other.last in this
 
+infix fun LongRange.overlaps(other: LongRange): Boolean =
+    first in other || last in other || other.first in this || other.last in this
+
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
+infix fun LongRange.containsRange(other: LongRange): Boolean = other.first in this && other.last in this
+
 
 infix fun IntRange.adjoint(other: IntRange): Boolean = this.last + 1 == other.first || other.last + 1 == this.first
 
 fun String.allInts() = allIntsInString(this)
+fun String.allLongs(): List<Long> = """\d+""".toRegex().findAll(this)
+    .map { it.value.toLong() }
+    .toList()
+
 fun allIntsInString(line: String): List<Int> {
     return """-?\d+""".toRegex().findAll(line)
         .map { it.value.toInt() }
         .toList()
 }
+
 fun String.firstInt(): Int = """-?\d+""".toRegex().find(this)!!.value.toInt()
 fun String.firstIntOr(default: Int): Int = this.firstInt() ?: default
