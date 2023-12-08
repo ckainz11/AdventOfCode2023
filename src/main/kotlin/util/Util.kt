@@ -276,4 +276,15 @@ fun allIntsInString(line: String): List<Int> {
 }
 
 fun String.firstInt(): Int = """-?\d+""".toRegex().find(this)!!.value.toInt()
-fun String.firstIntOr(default: Int): Int = this.firstInt() ?: default
+fun leastCommonMultiple(a: Long, b: Long): Long {
+    val larger = if (a > b) a else b
+    val maxLcm = a * b
+    var lcm = larger
+    while (lcm <= maxLcm) {
+        if (lcm % a == 0L && lcm % b == 0L) {
+            return lcm
+        }
+        lcm += larger
+    }
+    return maxLcm
+}
