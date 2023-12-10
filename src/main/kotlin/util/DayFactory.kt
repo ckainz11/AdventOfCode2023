@@ -10,6 +10,7 @@ import days.day06.Day6
 import days.day07.Day7
 import days.day08.Day8
 import days.day09.Day9
+import days.day10.Day10
 
 
 class DayFactory {
@@ -23,7 +24,8 @@ class DayFactory {
             6 to ::Day6,
             7 to ::Day7,
             8 to ::Day8,
-            9 to ::Day9
+            9 to ::Day9,
+            10 to ::Day10
         )
 
         fun getDayObject(day: Int, input: String): Day<out Any> {
