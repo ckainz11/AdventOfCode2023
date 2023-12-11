@@ -155,41 +155,11 @@ data class Point3(val x: Int, val y: Int, val z: Int) {
     )
 }
 
-fun String.hexToBinaryString(): String {
-    val num = this.uppercase(Locale.getDefault())
-    var binary = ""
-    for (hex in num) {
-        when (hex) {
-            '0' -> binary += "0000"
-            '1' -> binary += "0001"
-            '2' -> binary += "0010"
-            '3' -> binary += "0011"
-            '4' -> binary += "0100"
-            '5' -> binary += "0101"
-            '6' -> binary += "0110"
-            '7' -> binary += "0111"
-            '8' -> binary += "1000"
-            '9' -> binary += "1001"
-            'A' -> binary += "1010"
-            'B' -> binary += "1011"
-            'C' -> binary += "1100"
-            'D' -> binary += "1101"
-            'E' -> binary += "1110"
-            'F' -> binary += "1111"
-        }
-    }
-    return binary
-}
-//fun <T> permutations(list: List<T>): List<Pair<T,T>> {
-//    val permutations = mutableListOf<Pair<T,T>>()
-//    for((i,element) in list.withIndex()){
-//        for((j,ele) in list.withIndex()){
-//            if(i != j)
-//                permutations.add(Pair(element, ele))
-//        }
-//    }
-//    return permutations.toList()
-//}
+/*----- List Functions -----*/
+
+fun <T> List<T>.pairwise() = mapIndexed { index, first -> drop(index + 1).map { second -> first to second } }.flatten()
+fun <T, R> List<T>.pairwise(transform: (T, T) -> R) =
+    mapIndexed { index, first -> drop(index + 1).map { second -> transform(first, second) } }.flatten()
 
 fun <E> permutations(list: List<E>, length: Int? = null): Sequence<List<E>> = sequence {
     val n = list.size
@@ -225,7 +195,7 @@ fun <E> permutations(list: List<E>, length: Int? = null): Sequence<List<E>> = se
         }
     }
 }
-/*----- Helper Functions -----*/
+/*-----Helper Functions-----*/
 
 private fun <T> transposeMatrix(matrix: Matrix<T>): Matrix<T> = List(matrix.getColNum()) { i -> matrix.getColumn(i) }
 private fun <T> transposeMatrix(matrix: Matrix<T>, times: Int): Matrix<T> {
@@ -235,19 +205,7 @@ private fun <T> transposeMatrix(matrix: Matrix<T>, times: Int): Matrix<T> {
     }
     return newMatrix
 }
-/*----- Old functions -----*/
 
-fun transpose(matrix: List<String>): List<String> {
-    val col = matrix[0].length
-    val row = matrix.size
-    val transpose = MutableList(col) { MutableList(row) { ' ' } }
-    for (i in 0..row - 1) {
-        for (j in 0..col - 1) {
-            transpose[j][i] = matrix[i][j]
-        }
-    }
-    return transpose.map { it -> it.joinToString("") }
-}
 
 fun <T> getCol(array: List<List<T>>, col: Int): List<T> {
     val rows = array.size
@@ -261,17 +219,15 @@ fun <T> getCol(array: List<List<T>>, col: Int): List<T> {
     return column
 }
 
+/*-----Range Functions-----*/
+
 infix fun IntRange.overlaps(other: IntRange): Boolean =
     first in other || last in other || other.first in this || other.last in this
 
-infix fun LongRange.overlaps(other: LongRange): Boolean =
-    first in other || last in other || other.first in this || other.last in this
-
 infix fun IntRange.containsRange(other: IntRange): Boolean = other.first in this && other.last in this
-infix fun LongRange.containsRange(other: LongRange): Boolean = other.first in this && other.last in this
-
-
 infix fun IntRange.adjoint(other: IntRange): Boolean = this.last + 1 == other.first || other.last + 1 == this.first
+
+/*-----String & Char Functions-----*/
 
 fun String.allInts() = allIntsInString(this)
 fun String.allLongs(): List<Long> = """\d+""".toRegex().findAll(this)
@@ -285,6 +241,35 @@ fun allIntsInString(line: String): List<Int> {
 }
 
 fun String.firstInt(): Int = """-?\d+""".toRegex().find(this)!!.value.toInt()
+
+fun String.hexToBinaryString(): String {
+    val num = this.uppercase(Locale.getDefault())
+    var binary = ""
+    for (hex in num) {
+        when (hex) {
+            '0' -> binary += "0000"
+            '1' -> binary += "0001"
+            '2' -> binary += "0010"
+            '3' -> binary += "0011"
+            '4' -> binary += "0100"
+            '5' -> binary += "0101"
+            '6' -> binary += "0110"
+            '7' -> binary += "0111"
+            '8' -> binary += "1000"
+            '9' -> binary += "1001"
+            'A' -> binary += "1010"
+            'B' -> binary += "1011"
+            'C' -> binary += "1100"
+            'D' -> binary += "1101"
+            'E' -> binary += "1110"
+            'F' -> binary += "1111"
+        }
+    }
+    return binary
+}
+
+
+/*-----Math Functions-----*/
 fun leastCommonMultiple(a: Long, b: Long): Long {
     val larger = if (a > b) a else b
     val maxLcm = a * b
