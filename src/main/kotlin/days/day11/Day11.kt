@@ -4,6 +4,7 @@ import days.Day
 import util.Point
 import util.columns
 import util.mapMatrixIndexedNotNull
+import util.pairwise
 
 class Day11(override val input: String) : Day<Long>(input) {
 
@@ -17,9 +18,6 @@ class Day11(override val input: String) : Day<Long>(input) {
         listOf(grid, grid.columns()).map { matrix -> matrix.map { list -> if (list.all { it == '.' }) expand else 1 } }
             .let { (rowHeights, colWidths) ->
                 galaxies.map { p -> Point(colWidths.take(p.x + 1).sum().toInt(), rowHeights.take(p.y + 1).sum().toInt()) }
-                    .let { expanded -> expanded.mapIndexed { index, galaxy ->
-                        expanded.drop(index + 1).sumOf { galaxy.mDist(it).toLong() }
-                    }.sum()
+                    .let { expanded -> expanded.pairwise { point, point2 -> point.mDist(point2).toLong() } }.sum()
                 }
-            }
 }
