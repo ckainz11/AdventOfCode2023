@@ -13,6 +13,7 @@ fun <T> matrixOf(vararg rows: List<T>): Matrix<T> = List(rows.size) { i -> rows[
 fun <T> matrixOf(rows: List<List<T>>): Matrix<T> = List(rows.size) { i -> rows[i] }
 fun <T> Matrix<T>.toMutableMatrix(): MutableMatrix<T> = this.map { it.toMutableList() }.toMutableList()
 fun <T> Matrix<T>.getColumn(col: Int): List<T> = getCol(this, col)
+fun <T> Matrix<T>.columns() = (0..<getRowNum()).map { getColumn(it) }
 operator fun <T> Matrix<T>.get(p: Point): T = this[p.y][p.x]
 operator fun <T> MutableMatrix<T>.set(p: Point, value: T) {
     this[p.y][p.x] = value
@@ -90,6 +91,14 @@ fun <T> Matrix<T>.getSurroundingCoordinates(row: Int, col: Int): List<Point> {
 
 fun <T> Matrix<T>.getSurroundingCoordinates(point: Point): List<Point> =
     this.getSurroundingCoordinates(point.y, point.x)
+
+/**
+ * Returns a list containing only the non-null results of applying the given [transform] function to each element
+ * and its index in the original collection.
+ */
+fun <T, R> Matrix<T>.mapMatrixIndexedNotNull(transform: (Point, T) -> R) = this.flatMapIndexed { y, row ->
+    row.mapIndexedNotNull { x, it -> transform(Point(x, y), it) }
+}
 
 data class Point(var x: Int, var y: Int) {
     operator fun plus(other: Point) = Point(other.x + x, other.y + y)
