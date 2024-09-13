@@ -1,10 +1,7 @@
 package days.day11
 
 import days.Day
-import util.Point
-import util.columns
-import util.mapMatrixIndexedNotNull
-import util.pairwise
+import util.*
 
 class Day11(override val input: String) : Day<Long>(input) {
 
@@ -15,9 +12,9 @@ class Day11(override val input: String) : Day<Long>(input) {
     override fun solve2(): Long = solve(1_000_000L)
 
     private fun solve(expand: Long): Long =
-        listOf(grid, grid.columns()).map { matrix -> matrix.map { list -> if (list.all { it == '.' }) expand else 1 } }
+        listOf(grid, grid.transposed(1)).map { matrix -> matrix.map { list -> if (list.all { it == '.' }) expand else 1 } }
             .let { (rowHeights, colWidths) ->
                 galaxies.map { p -> Point(colWidths.take(p.x + 1).sum().toInt(), rowHeights.take(p.y + 1).sum().toInt()) }
-                    .let { expanded -> expanded.pairwise { point, point2 -> point.mDist(point2).toLong() } }.sum()
+                    .pairwise { point, point2 -> point.mDist(point2).toLong() }.sum()
                 }
 }
